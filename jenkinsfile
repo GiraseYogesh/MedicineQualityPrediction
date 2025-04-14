@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = 'medicine-quality-check'
+        CONTAINER_PORT = '5000'
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/GiraseYogesh/MedicineQualityPrediction.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dockerImage = docker.build("${IMAGE_NAME}")
+                }
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    dockerImage.run("-p ${CONTAINER_PORT}:${CONTAINER_PORT}")
+                }
+            }
+        }
+    }
+}
